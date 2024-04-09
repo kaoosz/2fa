@@ -1,0 +1,19 @@
+{
+  "name": "2fa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "otpauth": "^9.2.2",
+    "qrcode": "^1.5.3"
+  }
+}
