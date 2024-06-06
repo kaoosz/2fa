@@ -9,31 +9,23 @@ app.use(express.urlencoded({extended: true}));
 const PORT = process.env.PORT || 3008
 
 
-app.post('/',(req,res) => {
+app.get('/generate',(req,res) => {
     try {
-        console.log(req.body);
         let totp = new OTPAuth.TOTP({
-            issuer: "ACME2",
-            label: "AzureDiamond2",
+            issuer: "Gui",
+            label: "GuiTest",
             algorithm: "SHA1",
             digits: 6,
             period: 15,
-            secret: "NB2W45DFOIZANB2W45DFOIZA", // or 'OTPAuth.Secret.fromBase32("NB2W45DFOIZA")'
+            secret: "UDB2QN5L67YPP46DQUAI3XPN5UTVV5IK", // or 'OTPAuth.Secret.fromBase32("NB2W45DFOIZA")'
         });
         
         console.log("totp",totp);
         
-        // // let token = totp.generate();
-        
-        // // console.log("token",token);
-        
-        let delta = totp.validate({ token: req.body.token });
-        
-        console.log("delta",delta);
-        
-        // let uri = totp.toString();
         let uri = OTPAuth.URI.stringify(totp);
-        // console.log("uri",uri);
+
+        let secret = new OTPAuth.Secret({ size: 20 });
+        console.log("secret",secret.base32);
 
         QRCode.toDataURL(uri,(err, url) => {
             if(err) console.log("erro",err);
@@ -46,36 +38,36 @@ app.post('/',(req,res) => {
     }
 })
 
-app.post('/auth',(req,res) => {
+app.post('/validate',(req,res) => {
     try {
         console.log(req.body);
         let totp = new OTPAuth.TOTP({
-            issuer: "GuiIssue",
-            label: "GuiLabel",
+            issuer: "Gui",
+            label: "GuiTest",
             algorithm: "SHA1",
             digits: 6,
-            period: 30,
-            secret: "FWFW4FE3EDQCD", // or 'OTPAuth.Secret.fromBase32("NB2W45DFOIZA")'
+            period: 15,
+            secret: "UDB2QN5L67YPP46DQUAI3XPN5UTVV5IK", // or 'OTPAuth.Secret.fromBase32("NB2W45DFOIZA")'
         });
+
+        // let totp = new OTPAuth.TOTP({
+        //     issuer: "GuiIssue",
+        //     label: "GuiLabel",
+        //     algorithm: "SHA1",
+        //     digits: 6,
+        //     period: 30,
+        //     secret: "FWFW4FE3EDQCD", // or 'OTPAuth.Secret.fromBase32("NB2W45DFOIZA")'
+        // });
         
-        console.log("totp",totp);
+        let token = totp.generate(15);
         
-        // // let token = totp.generate();
-        
-        // // console.log("token",token);
-        
-        let delta = totp.validate({ token: req.body.token });
+        console.log("tokenCERTO:",token);
+
+        let mytoken = String(req.body.token);
+        let delta = totp.validate({token: mytoken});
         
         console.log("delta",delta);
         
-        // let uri = totp.toString();
-        let uri = OTPAuth.URI.stringify(totp);
-        // console.log("uri",uri);
-
-        QRCode.toDataURL(uri,(err, url) => {
-            if(err) console.log("erro",err);
-            console.log(url)
-        })
         res.send('Hello')
         
     } catch (error) {
